@@ -2,6 +2,7 @@
 package flavor.pie.itemchat
 
 import com.google.inject.Inject
+import flavor.pie.itemchat.ItemChat.Permissions.useItemChat
 import flavor.pie.kludge.*
 import ninja.leaping.configurate.commented.CommentedConfigurationNode
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader
@@ -76,6 +77,7 @@ class ItemChat @Inject constructor(@DefaultConfig(sharedRoot = true) val path: P
 
     object Permissions {
         const val arbitraryNbt = "itemchat.arbitrary_nbt"
+        const val useItemChat = "itemchat.use"
         const val bypassExpanderSize = "itemchat.bypass_expander_size"
     }
 
@@ -95,6 +97,9 @@ class ItemChat @Inject constructor(@DefaultConfig(sharedRoot = true) val path: P
 
     @Listener
     fun chat(e: MessageChannelEvent.Chat, @First p: Player) {
+        if(!p.hasPermission(useItemChat)){
+            return;
+        }
         val msg = e.formatter.body.format()
         val size = regex.findAll(msg.toPlain()).toList().size
         if (size > 1) {
