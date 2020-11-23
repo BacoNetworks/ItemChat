@@ -116,6 +116,9 @@ class ItemChat @Inject constructor(@DefaultConfig(sharedRoot = true) val path: P
 
     @Listener
     fun command(e: SendCommandEvent, @First p: Player) {
+        if(!p.hasPermission(useItemChat)){
+            return;
+        }
         var args: Text = e.arguments.text()
         val size = regex.findAll(e.arguments).toList().size
         if (size > 1) {
